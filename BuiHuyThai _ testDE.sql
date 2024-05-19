@@ -45,7 +45,7 @@ Month,
 CustomerID,
 CustomerFullName,
 EmployeeMonthAmount,
-rank() over(partition by Year, Month order by EmployeeMonthAmount desc) as top_customer 
+row_number() over(partition by Year, Month order by EmployeeMonthAmount desc) as top_customer 
 from table1)
 
 select Year,
@@ -73,7 +73,7 @@ table3 as
 (
 select Year, Month, CustomerID, CustomerFullName, EmployeeMonthAmount,
 lag(EmployeeMonthAmount) over (partition by customerID, month order by year) CustomerMonthAmount_LastYear,
-rank() over(partition by Year, Month order by EmployeeMonthAmount desc) as top_customer 
+row_number() over(partition by Year, Month order by EmployeeMonthAmount desc) as top_customer 
 from table1)
 
 select Year,
