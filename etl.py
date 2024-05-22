@@ -10,7 +10,7 @@ from prefect import flow, task
 # Load environment variables
 server = 'HuyThai\SQLEXPRESS'
 database = 'Thai1'
-dwh = 'ThaiDWH2'
+dwh = 'ThaiDWH'
 # username = os.environ["user"]
 # password = os.environ["pass"]
 username = 'Thai'
@@ -61,7 +61,7 @@ def transform(customers, products, order_header, order_detail, product_subcatego
     dim_date['Weekday'] = dim_date['OrderDate'].dt.weekday
     #factsales
     fact_sales = order_detail.merge(order_header, on='SalesOrderID')
-    fact_sales['TotalAmount'] = fact_sales['OrderQty'] * (fact_sales['UnitPrice'] - fact_sales['UnitPriceDiscount'])
+    fact_sales['TotalAmount'] = fact_sales['OrderQty'] * fact_sales['UnitPrice'] * (1 - fact_sales['UnitPriceDiscount'])
     fact_sales = fact_sales[['SalesOrderDetailID', 'SalesOrderID', 'CustomerID', 'ProductID', 'OrderDate', 'ShipDate', 'SalesOrderNumber', 'SubTotal', 'OrderQty', 'UnitPrice', 'UnitPriceDiscount', 'TotalAmount']]
     fact_sales = fact_sales.merge(dim_date, left_on='OrderDate', right_on='OrderDate')
     fact_sales = fact_sales[['SalesOrderDetailID', 'SalesOrderID', 'CustomerID', 'ProductID', 'DateID','ShipDate', 'SalesOrderNumber', 'SubTotal', 'OrderQty', 'UnitPrice', 'UnitPriceDiscount', 'TotalAmount']]
@@ -102,7 +102,7 @@ def log_pipeline_run(connection, start_time, end_time, status):
 #     engine_dwh.dispose()
 
 @flow
-def run_pipeline(start_date=None, end_date=None):
+def run_pipeline():
     start_time = datetime.now()
     
     # source_engine, conn_source = create_engine_and_connect(url)
@@ -131,4 +131,4 @@ def run_pipeline(start_date=None, end_date=None):
         dwh_engine.dispose()
 
 if __name__ == '__main__':
-    run_pipeline(start_date='2024-01-01', end_date='2024-12-31')
+    run_pipeline()

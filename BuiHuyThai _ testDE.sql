@@ -1,4 +1,4 @@
-USE ThaiDWH;
+use ThaiDWH;
 -- Cau hoi 1: Thong ke so luong don hang & doanh thu cua moi khach hang da mua
 
 select c.CustomerID, 
@@ -85,7 +85,7 @@ CustomerMonthAmount_LastYear
 from table3 where top_customer <= 5 order by Year, Month;
 
 
-
+select top(100) * from FactSales order by CustomerID;
 
 
 
